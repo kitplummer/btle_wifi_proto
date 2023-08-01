@@ -55,13 +55,13 @@ async function main () {
 
 	//ditto = new Ditto({ type: 'onlinePlayground', appID: APP_ID, token: APP_TOKEN})
 	ditto = new Ditto({ type: 'sharedKey', appID: APP_ID, sharedKey: SHARED_KEY})
-  ditto.setOfflineOnlyLicenseToken(OFFLINE_TOKEN)
+  	ditto.setOfflineOnlyLicenseToken(OFFLINE_TOKEN)
 	ditto.startSync();
 
-  wapSub = ditto.store.collection("wap").findByID("wap").subscribe()
-  wapLiveQuery = ditto.store.collection("wap").findByID("wap").observeLocal((doc, event) => {
-    wap = doc
-    console.log("wap: ", wap)
+  	wapSub = ditto.store.collection("wap").findByID("wap").subscribe()
+  	wapLiveQuery = ditto.store.collection("wap").findByID("wap").observeLocal((doc, event) => {
+    	wap = doc
+    	console.log("wap: ", wap)
   })
 
 	subscription = ditto.store.collection("status").find("isDeleted == false").subscribe()
