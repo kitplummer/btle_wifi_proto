@@ -1,12 +1,14 @@
 var sense = require("sense-hat-led");
 import { init, Ditto, Document, Identity } from '@dittolive/ditto';
+require('dotenv').config()
 
 sense.setRotation(180);
 
 let ditto
-let APP_ID = "09fcd60d-69d2-414d-bc66-9c2475077258"
-let APP_TOKEN = "aa73cec6-ac1c-4989-8749-94450106cc9d"
-let SHARED_KEY = "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgKhIg22ewaiO6135nDGwy3Yh78g6x6em1gEZhYNoWVRuhRANCAASeuOoqVE6/0VJeOA/s9rAIHhtuY9nIP+rBkJSC/BxZ1xSnDsxVaSevTSYni64XH/HNd7Yu8mipTIs47SKWiUKG"
+let APP_ID = process.env.APP_ID
+let OFFLINE_TOKEN = process.env.OFFLINE_TOKEN
+let SHARED_KEY = process.env.SHARED_KEY
+
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 let red = [255, 0, 0]
@@ -29,7 +31,10 @@ X, X, O, X, X, O, O, O
 
 let subscription
 let liveQuery
+let wapSub
+let wapLiveQuery
 let status: Document[] = []
+let wap: Document
 
 process.once('SIGINT', function (code) {
     sense.clear();
@@ -50,7 +55,15 @@ async function main () {
 
 	//ditto = new Ditto({ type: 'onlinePlayground', appID: APP_ID, token: APP_TOKEN})
 	ditto = new Ditto({ type: 'sharedKey', appID: APP_ID, sharedKey: SHARED_KEY})
+  ditto.setOfflineOnlyLicenseToken(OFFLINE_TOKEN)
 	ditto.startSync();
+
+  wapSub = ditto.store.collection("wap").findByID("wap").subscribe()
+  wapLiveQuery = ditto.store.collection("wap").findByID("wap").observeLocal((doc, event) => {
+    wap = doc
+    console.log("wap: ", wap)
+  })
+
 	subscription = ditto.store.collection("status").find("isDeleted == false").subscribe()
 	liveQuery = ditto.store.collection("status").find("isDeleted == false").observeLocal((docs, event) => {
 		status = docs
