@@ -1,5 +1,5 @@
 var sense = require("sense-hat-led");
-import { init, Ditto, Document, Identity } from '@dittolive/ditto';
+import { init, Ditto, Document, Identity, TransportConfig } from '@dittolive/ditto';
 require('dotenv').config()
 
 import { SenseHat } from 'pi-sense-hat'
@@ -67,10 +67,15 @@ async function main () {
 	sense.clear();
 	await sleep(1000);
 	sense.setPixels(dittoMark);
+const config = new TransportConfig()
+config.peerToPeer.bluetoothLE.isEnabled = true
+config.peerToPeer.lan.isEnabled = false
+config.peerToPeer.awdl.isEnabled = false
 
 	ditto = new Ditto({ type: 'onlinePlayground', appID: APP_ID, token: APP_TOKEN})
 	//ditto = new Ditto({ type: 'sharedKey', appID: APP_ID, sharedKey: SHARED_KEY})
 //  ditto.setOfflineOnlyLicenseToken(OFFLINE_TOKEN)
+	ditto.setTransportConfig(config)
 	ditto.startSync();
 
   wapSub = ditto.store.collection("wap").findByID("wap").subscribe()
