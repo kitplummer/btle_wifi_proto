@@ -75,6 +75,15 @@ config.peerToPeer.awdl.isEnabled = false
 	ditto = new Ditto({ type: 'onlinePlayground', appID: APP_ID, token: APP_TOKEN})
 	//ditto = new Ditto({ type: 'sharedKey', appID: APP_ID, sharedKey: SHARED_KEY})
 //  ditto.setOfflineOnlyLicenseToken(OFFLINE_TOKEN)
+const transportConditionsObserver = ditto.observeTransportConditions((condition, source) => {
+     if (condition === 'BLEDisabled') {
+       console.log('BLE disabled')
+     } else if (condition === 'NoBLECentralPermission') {
+       console.log('Permission missing for BLE')
+     } else if (condition === 'NoBLEPeripheralPermission') {
+       console.log('Permissions missing for BLE')
+     }
+   })
 	ditto.setTransportConfig(config)
 	ditto.startSync();
 
@@ -95,7 +104,7 @@ config.peerToPeer.awdl.isEnabled = false
       sense.setPixel(7, 7, black)
     }
     //console.log("local peer key: ", graph.localPeer.peerKey)
-    //console.log("local peer connections: ", graph.localPeer.connections)
+    console.log("local peer connections: ", graph.localPeer.connections)
     sense.setPixel(7, 0, black)
     sense.setPixel(7, 7, black)
     graph.localPeer.connections.forEach((peer) => {
