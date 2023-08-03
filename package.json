@@ -11,6 +11,7 @@
   "dependencies": {
     "@dittolive/ditto": "^4.3.0",
     "dotenv": "^16.3.1",
+    "pi-sense-hat": "^1.0.14",
     "sense-hat-led": "^1.2.0"
   },
   "devDependencies": {
