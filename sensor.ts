@@ -77,8 +77,8 @@ async function main() {
   await sleep(1000);
   sense.setPixels(dittoMark);
   const transportConfig = new TransportConfig()
-  config.peerToPeer.bluetoothLE.isEnabled = config.USE_BLE
-  config.peerToPeer.lan.isEnabled = config.USE_LAN
+  transportConfig.peerToPeer.bluetoothLE.isEnabled = config.USE_BLE
+  transportConfig.peerToPeer.lan.isEnabled = config.USE_LAN
 
   ditto = new Ditto({ type: 'onlinePlayground', appID: config.APP_ID, token: config.APP_TOKEN })
   //ditto = new Ditto({ type: 'sharedKey', appID: APP_ID, sharedKey: SHARED_KEY})
