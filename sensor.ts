@@ -1,4 +1,6 @@
 var sense = require("sense-hat-led");
+var config = require("nconf");
+
 import { init, Ditto, Document, Identity, TransportConfig } from '@dittolive/ditto';
 require('dotenv').config()
 
@@ -6,16 +8,19 @@ import { SenseHat } from 'pi-sense-hat'
 
 let senseHat = new SenseHat()
 
+config.argv()
+  .env()
+  .file({ file: 'config.json' })
 
 sense.setRotation(180);
 
-let ditto
+let ditto = Ditto
 
-let APP_ID = process.env.APP_ID
+let APP_ID = config.get("APP_ID")
 let OFFLINE_TOKEN = process.env.OFFLINE_TOKEN
 let SHARED_KEY = process.env.SHARED_KEY
 let WAP_DEVICE_NAME = process.env.WAP_DEVICE_NAME
-let APP_TOKEN = process.env.APP_TOKEN
+let APP_TOKEN = config.get("APP_TOKEN")
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 

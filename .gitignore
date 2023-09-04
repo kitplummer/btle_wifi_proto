@@ -2,4 +2,6 @@ ditto/
 node_modules/
 .env
 index.js
+sensor.js
 wap.js
+config.json
