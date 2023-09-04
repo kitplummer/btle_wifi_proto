@@ -1,11 +1,7 @@
-var sense = require("sense-hat-led");
 var config = require("nconf");
+let sense = require("sense-hat-led");
 
 import { init, Ditto, Document, Identity, TransportConfig } from '@dittolive/ditto';
-
-import { SenseHat } from 'pi-sense-hat'
-
-let senseHat = new SenseHat()
 
 config.argv()
   .env()
@@ -14,6 +10,7 @@ config.argv()
 sense.setRotation(180);
 
 let ditto: Ditto
+let presenceObserver
 
 let APP_ID = config.get("APP_ID")
 let OFFLINE_TOKEN = process.env.OFFLINE_TOKEN
@@ -48,10 +45,6 @@ let wap: Document
 let wapSSID
 let wapPSK
 
-let joystickSubscription
-let joystickLiveQuery
-let joysticks: Document[] = []
-
 process.once('SIGINT', async () => {
   try {
     sense.clear()
@@ -61,7 +54,6 @@ process.once('SIGINT', async () => {
     process.exit(0)
   }
 });
-
 
 // sudo nmcli d wifi connect dittox password MyWiFiPassword
 // sudo nmcli con down id dittox 
@@ -97,13 +89,7 @@ async function main() {
     console.log("wap: ", wap.value)
   })
 
-  joystickSubscription = ditto.store.collection("joystick").find("isDeleted == false").subscribe()
-  joystickLiveQuery = ditto.store.collection("joystick").find("isDeleted == false").observeLocal((docs, event) => {
-    joysticks = docs
-    //console.log("JS docs: ", joysticks)
-  })
-
-  const presenceObserver = ditto.presence.observe((graph) => {
+  presenceObserver = ditto.presence.observe((graph) => {
     if (graph.remotePeers.length == 0) {
       sense.setPixel(7, 7, black)
     }
@@ -122,16 +108,6 @@ async function main() {
     })
   })
 
-  senseHat.on("joystick", (message) => {
-    //console.log("joystick event received:", JSON.stringify(message,null,2))
-    console.log("js event:", message["key"], message["state"])
-    ditto.store.collection("joystick").upsert({
-      event: message["key"],
-      state: message["state"],
-      isCompleted: false,
-      isDeleted: false
-    })
-  })
 }
 
 main()
