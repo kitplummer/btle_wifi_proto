@@ -11,7 +11,7 @@ const getConfig = (key: string, fallback?: any) => nconf.get(key) || fallback;
 const asBoolean = (value: any) => [true, 'true', 'True', 'TRUE', '1', 1].includes(value);
 
 const config: Record<string, any> = {
-  LOG_LEVEL: getConfig('log-level', 'info'),
+  LOG_LEVEL: getConfig('log-level', 'Info'),
   ARDUINO_SERIAL_PORT: getConfig('arduino-serial-port', '/dev/ttyACM0'),
   APP_ID: getConfig('ditto:app-id', ''),
   APP_TOKEN: getConfig('ditto:app-token', ''),
