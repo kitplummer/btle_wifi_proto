@@ -14,7 +14,7 @@ config.argv()
 
 sense.setRotation(180);
 
-let ditto = Ditto
+let ditto: Ditto
 
 let APP_ID = config.get("APP_ID")
 let OFFLINE_TOKEN = process.env.OFFLINE_TOKEN
