@@ -10,22 +10,14 @@ nconf.argv()
 const getConfig = (key: string, fallback?: any) => nconf.get(key) || fallback;
 const asBoolean = (value: any) => [true, 'true', 'True', 'TRUE', '1', 1].includes(value);
 
-const config: Record<string, any> = {
-  LOG_LEVEL: getConfig('log-level', 'Info'),
-  ARDUINO_SERIAL_PORT: getConfig('arduino-serial-port', '/dev/ttyACM0'),
-  APP_ID: getConfig('ditto:app-id', ''),
-  APP_TOKEN: getConfig('ditto:app-token', ''),
-  USE_CLOUD: asBoolean(getConfig('ditto:use-cloud', true)),
-  USE_LAN: asBoolean(getConfig('ditto:use-lan', true)),
-  USE_BLE: asBoolean(getConfig('ditto:use-ble', true)),
-};
 
 sense.setRotation(180);
 
 let ditto: Ditto
 let presenceObserver
 
-Logger.minimumLogLevel = config.LOG_LEVEL
+
+Logger.minimumLogLevel = getConfig('log-level', 'Info')
 
 let OFFLINE_TOKEN = process.env.OFFLINE_TOKEN
 let SHARED_KEY = process.env.SHARED_KEY
@@ -71,6 +63,14 @@ process.once('SIGINT', async () => {
 // sudo nmcli d wifi connect dittox password MyWiFiPassword
 // sudo nmcli con down id dittox 
 async function main() {
+  const config: Record<string, any> = {
+    ARDUINO_SERIAL_PORT: getConfig('arduino-serial-port', '/dev/ttyACM0'),
+    APP_ID: getConfig('ditto:app-id', ''),
+    APP_TOKEN: getConfig('ditto:app-token', ''),
+    USE_CLOUD: asBoolean(getConfig('ditto:use-cloud', true)),
+    USE_LAN: asBoolean(getConfig('ditto:use-lan', true)),
+    USE_BLE: asBoolean(getConfig('ditto:use-ble', true)),
+  };
   console.log("Starting Ditto SmallPeer");
   await init();
   sense.clear();
