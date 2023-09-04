@@ -2,7 +2,6 @@ var sense = require("sense-hat-led");
 var config = require("nconf");
 
 import { init, Ditto, Document, Identity, TransportConfig } from '@dittolive/ditto';
-require('dotenv').config()
 
 import { SenseHat } from 'pi-sense-hat'
 
