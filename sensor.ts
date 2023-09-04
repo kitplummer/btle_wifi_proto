@@ -1,22 +1,35 @@
-var config = require("nconf");
+var nconf = require("nconf");
 let sense = require("sense-hat-led");
 
-import { init, Ditto, Document, Identity, TransportConfig } from '@dittolive/ditto';
+import { init, Ditto, Document, Logger, TransportConfig } from '@dittolive/ditto';
 
-config.argv()
+nconf.argv()
   .env()
   .file({ file: 'config.json' })
+
+const getConfig = (key: string, fallback?: any) => nconf.get(key) || fallback;
+const asBoolean = (value: any) => [true, 'true', 'True', 'TRUE', '1', 1].includes(value);
+
+const config: Record<string, any> = {
+  LOG_LEVEL: getConfig('log-level', 'info'),
+  ARDUINO_SERIAL_PORT: getConfig('arduino-serial-port', '/dev/ttyACM0'),
+  APP_ID: getConfig('ditto:app-id', ''),
+  APP_TOKEN: getConfig('ditto:app-token', ''),
+  USE_CLOUD: asBoolean(getConfig('ditto:use-cloud', true)),
+  USE_LAN: asBoolean(getConfig('ditto:use-lan', true)),
+  USE_BLE: asBoolean(getConfig('ditto:use-ble', true)),
+};
 
 sense.setRotation(180);
 
 let ditto: Ditto
 let presenceObserver
 
-let APP_ID = config.get("APP_ID")
+Logger.minimumLogLevel = config.LOG_LEVEL
+
 let OFFLINE_TOKEN = process.env.OFFLINE_TOKEN
 let SHARED_KEY = process.env.SHARED_KEY
 let WAP_DEVICE_NAME = process.env.WAP_DEVICE_NAME
-let APP_TOKEN = config.get("APP_TOKEN")
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -63,12 +76,11 @@ async function main() {
   sense.clear();
   await sleep(1000);
   sense.setPixels(dittoMark);
-  const config = new TransportConfig()
-  config.peerToPeer.bluetoothLE.isEnabled = true
-  config.peerToPeer.lan.isEnabled = false
-  config.peerToPeer.awdl.isEnabled = false
+  const transportConfig = new TransportConfig()
+  config.peerToPeer.bluetoothLE.isEnabled = config.USE_BLE
+  config.peerToPeer.lan.isEnabled = config.USE_LAN
 
-  ditto = new Ditto({ type: 'onlinePlayground', appID: APP_ID, token: APP_TOKEN })
+  ditto = new Ditto({ type: 'onlinePlayground', appID: config.APP_ID, token: config.APP_TOKEN })
   //ditto = new Ditto({ type: 'sharedKey', appID: APP_ID, sharedKey: SHARED_KEY})
   //  ditto.setOfflineOnlyLicenseToken(OFFLINE_TOKEN)
   const transportConditionsObserver = ditto.observeTransportConditions((condition, source) => {
@@ -80,7 +92,7 @@ async function main() {
       console.log('Permissions missing for BLE')
     }
   })
-  ditto.setTransportConfig(config)
+  ditto.setTransportConfig(transportConfig)
   ditto.startSync();
 
   wapSub = ditto.store.collection("wap").findByID("wap").subscribe()
