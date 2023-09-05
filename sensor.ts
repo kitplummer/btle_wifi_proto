@@ -98,7 +98,7 @@ async function main() {
   wapSub = ditto.store.collection("wap").findByID("wap").subscribe()
   wapLiveQuery = ditto.store.collection("wap").findByID("wap").observeLocal((doc, event) => {
     wap = doc
-    console.log("wap: ", wap.value)
+    Logger.info("wap: ", wap.value)
   })
 
   presenceObserver = ditto.presence.observe((graph) => {
@@ -106,7 +106,11 @@ async function main() {
       sense.setPixel(7, 7, black)
     }
     //console.log("local peer key: ", graph.localPeer.peerKey)
-    console.log("local peer connections: ", graph.localPeer.connections)
+    if (graph.remotePeers.length > 0) {
+      graph.remotePeers.forEach(peer => {
+        Logger.info(`peer: ${peer.deviceName}`);
+      })
+    }
     sense.setPixel(7, 0, black)
     sense.setPixel(7, 7, black)
     graph.localPeer.connections.forEach((peer) => {
