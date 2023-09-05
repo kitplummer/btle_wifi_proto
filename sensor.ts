@@ -98,7 +98,7 @@ async function main() {
   wapSub = ditto.store.collection("wap").findByID("wap").subscribe()
   wapLiveQuery = ditto.store.collection("wap").findByID("wap").observeLocal((doc, event) => {
     wap = doc
-    Logger.info("wap: ", wap.value)
+    Logger.info(`wap: ${wap.value}`)
   })
 
   presenceObserver = ditto.presence.observe((graph) => {
