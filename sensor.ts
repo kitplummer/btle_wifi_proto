@@ -99,11 +99,12 @@ async function main() {
 
   rawSub = ditto.store.collection("raw_data").findAll().subscribe()
   rawLiveQuery = ditto.store.collection("raw_data").findAll().observeLocal((doc, event) => {
-    sense.setPixel(0, 0, blue)
-    sense.setPixel(0, 0, red)
+    sense.setPixel(7, 6, blue)
+    sense.setPixel(7, 5, red)
     Logger.info(`raw data received`)
-    sense.setPixel(0, 0, black)
+    sense.setPixel(7, 6, black)
   })
+
   wapSub = ditto.store.collection("wap").findByID("wap").subscribe()
   wapLiveQuery = ditto.store.collection("wap").findByID("wap").observeLocal((doc, event) => {
     wap = doc
