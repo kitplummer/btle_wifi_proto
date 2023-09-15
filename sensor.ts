@@ -71,6 +71,7 @@ async function main() {
     APP_ID: getConfig('ditto:app-id', ''),
     APP_TOKEN: getConfig('ditto:app-token', ''),
     SHARED_KEY: getConfig('ditto:shared-key', ''),
+    OFFLINE_TOKEN: getConfig('ditto:offline-token', ''),
     USE_CLOUD: asBoolean(getConfig('ditto:use-cloud', true)),
     USE_LAN: asBoolean(getConfig('ditto:use-lan', true)),
     USE_BLE: asBoolean(getConfig('ditto:use-ble', true)),
@@ -92,6 +93,7 @@ async function main() {
 
   // ditto = new Ditto({ type: 'onlinePlayground', appID: config.APP_ID, token: config.APP_TOKEN })
   ditto = new Ditto(identity, './ditto')
+  ditto.setOfflineOnlyLicenseToken(config.OFFLINE_TOKEN)
 
   //ditto = new Ditto({ type: 'sharedKey', appID: APP_ID, sharedKey: SHARED_KEY})
   //  ditto.setOfflineOnlyLicenseToken(OFFLINE_TOKEN)
