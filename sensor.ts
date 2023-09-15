@@ -45,6 +45,8 @@ let dittoMark = [
 
 let wapSub
 let wapLiveQuery
+let rawSub
+let rawLiveQuery
 
 let wap: Document
 let wapSSID
@@ -95,6 +97,13 @@ async function main() {
   ditto.setTransportConfig(transportConfig)
   ditto.startSync();
 
+  rawSub = ditto.store.collection("raw_data").findAll().subscribe()
+  rawLiveQuery = ditto.store.collection("wap").findAll().observeLocal((doc, event) => {
+    sense.setPixel(0, 0, blue)
+    sense.setPixel(0, 0, red)
+    Logger.info(`raw data received`)
+    sense.setPixel(0, 0, black)
+  })
   wapSub = ditto.store.collection("wap").findByID("wap").subscribe()
   wapLiveQuery = ditto.store.collection("wap").findByID("wap").observeLocal((doc, event) => {
     wap = doc
