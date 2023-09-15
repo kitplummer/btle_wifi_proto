@@ -106,7 +106,7 @@ async function main() {
     sense.setPixel(6, 7, blue)
     sense.setPixel(6, 7, red)
     sleep(500)
-    sense.setPixel(6, 7, red)
+    sense.setPixel(6, 7, black)
     Logger.info(`raw data received`)
   })
 
