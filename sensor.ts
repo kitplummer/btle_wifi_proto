@@ -98,7 +98,7 @@ async function main() {
   ditto.startSync();
 
   rawSub = ditto.store.collection("raw_data").findAll().subscribe()
-  rawLiveQuery = ditto.store.collection("wap").findAll().observeLocal((doc, event) => {
+  rawLiveQuery = ditto.store.collection("raw_data").findAll().observeLocal((doc, event) => {
     sense.setPixel(0, 0, blue)
     sense.setPixel(0, 0, red)
     Logger.info(`raw data received`)
