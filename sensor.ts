@@ -101,6 +101,8 @@ async function main() {
   rawLiveQuery = ditto.store.collection("raw_data").findAll().observeLocal((doc, event) => {
     for (let i = 0; i < 10; i++) {
       sense.setPixel(6, 7, red)
+      sleep(1000)
+      sense.setPixel(6, 7, black)
     }
     Logger.info(`raw data received`)
   })
