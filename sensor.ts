@@ -1,7 +1,7 @@
 var nconf = require("nconf");
 let sense = require("sense-hat-led");
 
-import { init, Ditto, Document, Logger, TransportConfig } from '@dittolive/ditto';
+import { init, Ditto, Document, Identity, Logger, TransportConfig } from '@dittolive/ditto';
 
 nconf.argv()
   .env()
@@ -15,6 +15,7 @@ sense.setRotation(180);
 
 let ditto: Ditto
 let presenceObserver
+let identity: Identity
 
 
 Logger.minimumLogLevel = getConfig('log-level', 'Info')
@@ -69,6 +70,7 @@ async function main() {
     ARDUINO_SERIAL_PORT: getConfig('arduino-serial-port', '/dev/ttyACM0'),
     APP_ID: getConfig('ditto:app-id', ''),
     APP_TOKEN: getConfig('ditto:app-token', ''),
+    SHARED_KEY: getConfig('ditto:shared-key', ''),
     USE_CLOUD: asBoolean(getConfig('ditto:use-cloud', true)),
     USE_LAN: asBoolean(getConfig('ditto:use-lan', true)),
     USE_BLE: asBoolean(getConfig('ditto:use-ble', true)),
@@ -82,7 +84,15 @@ async function main() {
   transportConfig.peerToPeer.bluetoothLE.isEnabled = config.USE_BLE
   transportConfig.peerToPeer.lan.isEnabled = config.USE_LAN
 
-  ditto = new Ditto({ type: 'onlinePlayground', appID: config.APP_ID, token: config.APP_TOKEN })
+  identity = {
+    type: 'sharedKey',
+    appID: config.APP_ID,
+    sharedKey: config.SHARED_KEY
+  }
+
+  // ditto = new Ditto({ type: 'onlinePlayground', appID: config.APP_ID, token: config.APP_TOKEN })
+  ditto = new Ditto(identity, './ditto')
+
   //ditto = new Ditto({ type: 'sharedKey', appID: APP_ID, sharedKey: SHARED_KEY})
   //  ditto.setOfflineOnlyLicenseToken(OFFLINE_TOKEN)
   const transportConditionsObserver = ditto.observeTransportConditions((condition, source) => {
