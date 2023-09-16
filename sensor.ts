@@ -115,7 +115,6 @@ async function main() {
   }
   // ditto = new Ditto({ type: 'onlinePlayground', appID: config.APP_ID, token: config.APP_TOKEN })
   ditto = new Ditto(identity, './ditto')
-  ditto.setOfflineOnlyLicenseToken(config.OFFLINE_TOKEN)
 
   //ditto = new Ditto({ type: 'sharedKey', appID: APP_ID, sharedKey: SHARED_KEY})
   //  ditto.setOfflineOnlyLicenseToken(OFFLINE_TOKEN)
