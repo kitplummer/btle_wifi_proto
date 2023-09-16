@@ -2,6 +2,7 @@ var nconf = require("nconf");
 let sense = require("sense-hat-led");
 
 import { init, Ditto, Document, Identity, Logger, TransportConfig } from '@dittolive/ditto';
+import { warn } from 'console';
 
 nconf.argv()
   .env()
@@ -75,22 +76,43 @@ async function main() {
     USE_CLOUD: asBoolean(getConfig('ditto:use-cloud', true)),
     USE_LAN: asBoolean(getConfig('ditto:use-lan', true)),
     USE_BLE: asBoolean(getConfig('ditto:use-ble', true)),
+    BPA_URL: getConfig('ditto:bpa-url', ''),
   };
+
   console.log("Starting Ditto SmallPeer");
   await init();
   sense.clear();
   await sleep(1000);
   sense.setPixels(dittoMark);
+
+  const authHandler = {
+    authenticationRequired: async function(authenticator) {
+      await authenticator.loginWithToken("full_access", "dummy-provider")
+      console.log(`Login requested`);
+
+    },
+    authenticationExpiringSoon: function(authenticator, secondsRemaining) {
+      console.log(`Auth token expiring in ${secondsRemaining} seconds`)
+    }
+  }
+
   const transportConfig = new TransportConfig()
   transportConfig.peerToPeer.bluetoothLE.isEnabled = config.USE_BLE
   transportConfig.peerToPeer.lan.isEnabled = config.USE_LAN
 
-  identity = {
-    type: 'sharedKey',
-    appID: config.APP_ID,
-    sharedKey: config.SHARED_KEY
-  }
+  // identity = {
+  //   type: 'sharedKey',
+  //   appID: config.APP_ID,
+  //   sharedKey: config.SHARED_KEY
+  // }
 
+  identity = {
+    type: 'onlineWithAuthentication',
+    appID: config.APP_ID,
+    enableDittoCloudSync: false,
+    authHandler: authHandler,
+    customAuthURL: config.BPA_URL,
+  }
   // ditto = new Ditto({ type: 'onlinePlayground', appID: config.APP_ID, token: config.APP_TOKEN })
   ditto = new Ditto(identity, './ditto')
   ditto.setOfflineOnlyLicenseToken(config.OFFLINE_TOKEN)
