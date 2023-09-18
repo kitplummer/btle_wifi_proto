@@ -140,14 +140,14 @@ async function main() {
     Logger.info(`raw data received`)
   })
 
-  wapSub = ditto.store.collection("wap").findByID("wap").subscribe()
-  wapLiveQuery = ditto.store.collection("wap").findByID("wap").observeLocal((doc, event) => {
-    wap = doc
-    sense.setPixel(0, 0, blue)
-    sense.setPixel(0, 0, red)
-    Logger.info(`wap: ${wap.value}`)
-    sense.setPixel(0, 0, black)
-  })
+  // wapSub = ditto.store.collection("wap").findByID("wap").subscribe()
+  // wapLiveQuery = ditto.store.collection("wap").findByID("wap").observeLocal((doc, event) => {
+  //   wap = doc
+  //   sense.setPixel(0, 0, blue)
+  //   sense.setPixel(0, 0, red)
+  //   Logger.info(`wap: ${wap.value}`)
+  //   sense.setPixel(0, 0, black)
+  // })
 
   presenceObserver = ditto.presence.observe((graph) => {
     if (graph.remotePeers.length == 0) {
