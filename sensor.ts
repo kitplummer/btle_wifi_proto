@@ -121,7 +121,9 @@ async function main() {
   ditto = new Ditto(identity, './ditto')
 
   //ditto = new Ditto({ type: 'sharedKey', appID: APP_ID, sharedKey: SHARED_KEY})
-  //  ditto.setOfflineOnlyLicenseToken(OFFLINE_TOKEN)
+  if (config.BPA_URL == "NA") {
+    ditto.setOfflineOnlyLicenseToken(config.OFFLINE_TOKEN)
+  }
   const transportConditionsObserver = ditto.observeTransportConditions((condition, source) => {
     if (condition === 'BLEDisabled') {
       console.log('BLE disabled')
