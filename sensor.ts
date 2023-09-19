@@ -3,6 +3,7 @@ let sense = require("sense-hat-led");
 
 import { init, Ditto, Document, Identity, Logger, TransportConfig } from '@dittolive/ditto';
 import { warn } from 'console';
+import { wrap } from 'module';
 
 nconf.argv()
   .env()
@@ -100,18 +101,21 @@ async function main() {
   transportConfig.peerToPeer.bluetoothLE.isEnabled = config.USE_BLE
   transportConfig.peerToPeer.lan.isEnabled = config.USE_LAN
 
-  // identity = {
-  //   type: 'sharedKey',
-  //   appID: config.APP_ID,
-  //   sharedKey: config.SHARED_KEY
-  // }
+  if (config.BPA_URL == "NA") {
+    identity = {
+      type: 'sharedKey',
+      appID: config.APP_ID,
+      sharedKey: config.SHARED_KEY
+    }
 
-  identity = {
-    type: 'onlineWithAuthentication',
-    appID: config.APP_ID,
-    enableDittoCloudSync: false,
-    authHandler: authHandler,
-    customAuthURL: config.BPA_URL,
+  } else {
+    identity = {
+      type: 'onlineWithAuthentication',
+      appID: config.APP_ID,
+      enableDittoCloudSync: false,
+      authHandler: authHandler,
+      customAuthURL: config.BPA_URL,
+    }
   }
   // ditto = new Ditto({ type: 'onlinePlayground', appID: config.APP_ID, token: config.APP_TOKEN })
   ditto = new Ditto(identity, './ditto')
