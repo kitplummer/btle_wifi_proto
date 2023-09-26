@@ -171,8 +171,10 @@ async function main() {
       //console.log("remote peer: ", peer.peer2)
       switch (peer['connectionType']) {
         case "AccessPoint":
+          Logger.info(`AP peer: ${peer.id}`);
           sense.setPixel(7, 0, green)
         case "Bluetooth":
+          Logger.info(`BLE peer: ${peer.id}`);
           sense.setPixel(7, 7, blue)
       }
     })
