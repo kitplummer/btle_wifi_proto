@@ -136,8 +136,8 @@ async function main() {
   ditto.setTransportConfig(transportConfig)
   ditto.startSync();
 
-  rawSub = ditto.store.collection("TAK_interop").findAll().subscribe()
-  rawLiveQuery = ditto.store.collection("TAK_interop").findAll().observeLocal(async (doc, event) => {
+  rawSub = ditto.store.collection("TAK_Interop").findAll().subscribe()
+  rawLiveQuery = ditto.store.collection("TAK_Interop").findAll().observeLocal(async (doc, event) => {
     for (let i = 0; i < 10; i++) {
       sense.setPixel(6, 7, red)
       await sleep(1000)
